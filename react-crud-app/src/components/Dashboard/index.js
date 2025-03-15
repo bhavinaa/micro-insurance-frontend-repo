@@ -1,103 +1,13 @@
-// import React, { useState, useEffect } from 'react';
-// import Swal from 'sweetalert2';
-
-// import Header from './Header';
-// import Table from './Table';
-// import Add from './Add';
-// import Edit from './Edit';
-
-// import { employeesData } from '../../data';
-
-// const Dashboard = ({ setIsAuthenticated }) => {
-//   const [employees, setEmployees] = useState(employeesData);
-//   const [selectedEmployee, setSelectedEmployee] = useState(null);
-//   const [isAdding, setIsAdding] = useState(false);
-//   const [isEditing, setIsEditing] = useState(false);
-
-//   useEffect(() => {
-//     const data = JSON.parse(localStorage.getItem('employees_data'));
-//     if (data !== null && Object.keys(data).length !== 0) setEmployees(data);
-//   }, []);
-
-//   const handleEdit = id => {
-//     const [employee] = employees.filter(employee => employee.id === id);
-
-//     setSelectedEmployee(employee);
-//     setIsEditing(true);
-//   };
-
-//   const handleDelete = id => {
-//     Swal.fire({
-//       icon: 'warning',
-//       title: 'Are you sure?',
-//       text: "You won't be able to revert this!",
-//       showCancelButton: true,
-//       confirmButtonText: 'Yes, delete it!',
-//       cancelButtonText: 'No, cancel!',
-//     }).then(result => {
-//       if (result.value) {
-//         const [employee] = employees.filter(employee => employee.id === id);
-
-//         Swal.fire({
-//           icon: 'success',
-//           title: 'Deleted!',
-//           text: `${employee.firstName} ${employee.lastName}'s data has been deleted.`,
-//           showConfirmButton: false,
-//           timer: 1500,
-//         });
-
-//         const employeesCopy = employees.filter(employee => employee.id !== id);
-//         localStorage.setItem('employees_data', JSON.stringify(employeesCopy));
-//         setEmployees(employeesCopy);
-//       }
-//     });
-//   };
-
-//   return (
-//     <div className="container">
-//       {!isAdding && !isEditing && (
-//         <>
-//           <Header
-//             setIsAdding={setIsAdding}
-//             setIsAuthenticated={setIsAuthenticated}
-//           />
-//           <Table
-//             employees={employees}
-//             handleEdit={handleEdit}
-//             handleDelete={handleDelete}
-//           />
-//         </>
-//       )}
-//       {isAdding && (
-//         <Add
-//           employees={employees}
-//           setEmployees={setEmployees}
-//           setIsAdding={setIsAdding}
-//         />
-//       )}
-//       {isEditing && (
-//         <Edit
-//           employees={employees}
-//           selectedEmployee={selectedEmployee}
-//           setEmployees={setEmployees}
-//           setIsEditing={setIsEditing}
-//         />
-//       )}
-//     </div>
-//   );
-// };
-
-// export default Dashboard;
-
-
 import React, { useState, useEffect } from "react";
-import "./App.css"; // Optional: Create your own CSS or remove this import
 
-function App() {
+// A single-file approach: includes all components (Create, Read, etc.)
+// and uses a pastel color scheme & responsive styles.
+
+export default function App() {
   const [policies, setPolicies] = useState([]);
   const [menu, setMenu] = useState("read");
 
-  // Fetch all policies from the Fabric network via the Go API
+  // Fetch policies from chaincode
   const fetchPoliciesHandler = async () => {
     try {
       const response = await fetch(
@@ -106,12 +16,9 @@ function App() {
       if (!response.ok) {
         throw new Error(`Fetch failed: ${response.status}`);
       }
-
       const text = await response.text();
-      // The response might include "Response: " prefix; remove it
       const jsonData = text.replace("Response: ", "");
       const data = JSON.parse(jsonData);
-
       setPolicies(data);
     } catch (error) {
       console.error("Error fetching policies:", error);
@@ -119,126 +26,156 @@ function App() {
     }
   };
 
-  // On initial load, fetch the policies
+  // Initial load
   useEffect(() => {
     fetchPoliciesHandler();
   }, []);
 
+  // If we switch to "read" again, refetch
   useEffect(() => {
-    if (menu === 'read') {
+    if (menu === "read") {
       fetchPoliciesHandler();
     }
   }, [menu]);
 
-  // Renders a simple menu to switch between CRUD operations
-  return (
-    <div className="app-container" style={{ padding: "20px", color: "white", backgroundColor: "#333", minHeight: "100vh" }}>
-      <h1 style={{ color: "#4ade80", marginBottom: "20px" }}>
-        Microinsurance Dashboard (Hyperledger Fabric)
-      </h1>
+  const menuItems = ["create", "read", "update", "delete", "analytics"];
 
-      <nav style={{ marginBottom: "20px" }}>
-        {["create", "read", "update", "delete"].map((item) => (
+  return (
+    <div style={styles.pageWrapper}>
+      {/* Header */}
+      <header style={styles.header}>
+        <h1 style={styles.title}>Microinsurance Dashboard</h1>
+        <p style={styles.subtitle}>Powered by Hyperledger Fabric</p>
+        <p style={styles.subtitle1}>made by bhavina SK</p>
+      </header>
+
+      {/* Navigation */}
+      <nav style={styles.navBar}>
+        {menuItems.map((item) => (
           <button
             key={item}
             onClick={() => setMenu(item)}
             style={{
-              marginRight: "10px",
-              padding: "8px 14px",
-              borderRadius: "5px",
-              backgroundColor: menu === item ? "#2563eb" : "#555",
-              color: "white",
-              border: "none",
-              cursor: "pointer",
+              ...styles.navButton,
+              backgroundColor: menu === item ? "#8e44ad" : "#bfa3cf",
             }}
           >
-            {item.charAt(0).toUpperCase() + item.slice(1)} Policy
+            {item.charAt(0).toUpperCase() + item.slice(1)}
           </button>
         ))}
       </nav>
 
-      {menu === "create" && (
-        <CreatePolicy
-          onPolicyCreated={fetchPoliciesHandler}
-        />
-      )}
-      {menu === "read" && (
-        <ReadPolicies
-          policies={policies}
-        />
-      )}
-      {menu === "update" && (
-        <UpdatePolicy
-          onPolicyUpdated={fetchPoliciesHandler}
-        />
-      )}
-      {menu === "delete" && (
-        <DeletePolicy
-          onPolicyDeleted={fetchPoliciesHandler}
-        />
-      )}
+      {/* Main container */}
+      <div style={styles.container}>
+        {menu === "create" && <CreatePolicy onPolicyCreated={fetchPoliciesHandler} />}
+        {menu === "read" && <ReadPolicies policies={policies} />}
+        {menu === "update" && <UpdatePolicy onPolicyUpdated={fetchPoliciesHandler} />}
+        {menu === "delete" && <DeletePolicy onPolicyDeleted={fetchPoliciesHandler} />}
+        {menu === "analytics" && <Analytics policies={policies} />}
+      </div>
     </div>
   );
 }
 
-/* ---------------------------------------
-   1) READ COMPONENT
---------------------------------------- */
-function ReadPolicies({ policies }) {
-  if (!policies || policies.length === 0) {
-    return <p>No policies found.</p>;
-  }
+/* ----------------------------------------------------
+   ANALYTICS
+---------------------------------------------------- */
+function Analytics({ policies }) {
+  // Mock weather data
+  const [weatherData] = useState({
+    location: "NUS Farm District",
+    temperature: 29,
+    condition: "Sunny",
+    chanceOfRain: 15,
+  });
+
+  const totalPolicies = policies.length;
+  const numericCoverage = policies.map((p) => Number(p.coverageAmount) || 0);
+  const totalCoverage = numericCoverage.reduce((sum, val) => sum + val, 0);
+  const activeCount = policies.filter((p) => p.status === "active").length;
+  const expiredCount = policies.filter((p) => p.status === "expired").length;
 
   return (
-    <div style={{ maxWidth: "100%", overflowX: "auto" }}>
-      <h2 style={{ color: "#93c5fd", marginBottom: "10px" }}>
-        All Insurance Policies
-      </h2>
-      <table
-        style={{
-          width: "100%",
-          borderCollapse: "collapse",
-          backgroundColor: "#444",
-        }}
-      >
-        <thead>
-          <tr style={{ backgroundColor: "#555" }}>
-            <th style={thStyle}>Policy ID</th>
-            <th style={thStyle}>Farmer ID</th>
-            <th style={thStyle}>Farmer Name</th>
-            <th style={thStyle}>Plan Name</th>
-            <th style={thStyle}>Condition</th>
-            <th style={thStyle}>Coverage</th>
-            <th style={thStyle}>Payout</th>
-            <th style={thStyle}>Premium</th>
-            <th style={thStyle}>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-        {policies.map((policy, index) => (
-            <tr key={policy.policyID || index} style={{ backgroundColor: index % 2 === 0 ? "#555" : "#666" }}>
-              <td>{policy.policyID}</td>
-              <td>{policy.farmerID}</td>
-              <td>{policy.farmerName}</td>
-              <td>{policy.planName}</td>
-              <td>{policy.condition}</td>
-              <td>{policy.coverageAmount}</td>
-              <td>{policy.payoutAmount}</td>
-              <td>{policy.premiumAmount}</td>
-              <td>{policy.status}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div style={styles.analyticsWrapper}>
+      <h2 style={styles.sectionTitle}>Analytics & Weather</h2>
+      <div style={styles.analyticsCards}>
+        <div style={styles.analyticsCard}>
+          <h3 style={styles.cardHeading}>Current Weather</h3>
+          <p style={styles.cardLine}>Location: {weatherData.location}</p>
+          <p style={styles.cardLine}>Temperature: {weatherData.temperature}°C</p>
+          <p style={styles.cardLine}>Condition: {weatherData.condition}</p>
+          <p style={styles.cardLine}>Chance of Rain: {weatherData.chanceOfRain}%</p>
+        </div>
+        <div style={styles.analyticsCard}>
+          <h3 style={styles.cardHeading}>Policy Stats</h3>
+          <p style={styles.cardLine}>Total Policies: {totalPolicies}</p>
+          <p style={styles.cardLine}>Active: {activeCount}</p>
+          <p style={styles.cardLine}>Expired: {expiredCount}</p>
+          <p style={styles.cardLine}>Coverage: ${totalCoverage.toLocaleString()}</p>
+        </div>
+      </div>
+      <p style={styles.note}>
+        <strong>Note:</strong> Weather data is mocked; stats are computed from loaded policies.
+        Integrate a real weather API or additional analytics for deeper insights!
+      </p>
     </div>
   );
 }
 
-/* ---------------------------------------
-   2) CREATE COMPONENT
---------------------------------------- */
+/* ----------------------------------------------------
+   READ
+---------------------------------------------------- */
+function ReadPolicies({ policies }) {
+  if (!policies || policies.length === 0) {
+    return <p style={styles.noData}>No policies found.</p>;
+  }
+  return (
+    <div style={styles.crudWrapper}>
+      <h2 style={styles.sectionTitle}>All Insurance Policies</h2>
+      <div style={styles.responsiveTableWrapper}>
+        <table style={styles.table}>
+          <thead>
+            <tr style={styles.tableHeadRow}>
+              <th style={styles.th}>Policy ID</th>
+              <th style={styles.th}>Farmer ID</th>
+              <th style={styles.th}>Farmer Name</th>
+              <th style={styles.th}>Plan Name</th>
+              <th style={styles.th}>Condition</th>
+              <th style={styles.th}>Coverage</th>
+              <th style={styles.th}>Payout</th>
+              <th style={styles.th}>Premium</th>
+              <th style={styles.th}>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {policies.map((policy, index) => (
+              <tr
+                key={policy.policyID || index}
+                style={{
+                  backgroundColor: index % 2 === 0 ? "#f5f5f5" : "white",
+                }}
+              >
+                <td style={styles.td}>{policy.policyID}</td>
+                <td style={styles.td}>{policy.farmerID}</td>
+                <td style={styles.td}>{policy.farmerName}</td>
+                <td style={styles.td}>{policy.planName}</td>
+                <td style={styles.td}>{policy.condition}</td>
+                <td style={styles.td}>{policy.coverageAmount}</td>
+                <td style={styles.td}>{policy.payoutAmount}</td>
+                <td style={styles.td}>{policy.premiumAmount}</td>
+                <td style={styles.td}>{policy.status}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
 
-
+/* ----------------------------------------------------
+   CREATE
+---------------------------------------------------- */
 function CreatePolicy({ onPolicyCreated }) {
   const [form, setForm] = useState({
     policyID: "",
@@ -249,32 +186,23 @@ function CreatePolicy({ onPolicyCreated }) {
     coverageAmount: "",
     payoutAmount: "",
     premiumAmount: "",
-    status: "active", // default
+    status: "active",
   });
 
-  // We might want coverageAmount, payoutAmount, premiumAmount to be numeric
-  // or date fields if your chaincode expects a date
-
-  // If you want a date, do a separate field like "startDate" with type="date"
-
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm({ ...form, [name]: value });
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Optional: Basic validation
     if (!form.policyID.trim()) {
       return alert("Policy ID is required.");
     }
     if (isNaN(+form.coverageAmount)) {
       return alert("Coverage amount must be a valid number.");
     }
-    // etc. for other fields
 
-    // We build the formData for x-www-form-urlencoded approach
     const formData = new URLSearchParams();
     formData.append("args", form.policyID);
     formData.append("args", form.farmerID);
@@ -291,22 +219,20 @@ function CreatePolicy({ onPolicyCreated }) {
         "http://localhost:3000/invoke?channelid=mychannel&chaincodeid=basic&function=CreateInsurancePolicy",
         {
           method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
           body: formData.toString(),
         }
       );
-
       const text = await response.text();
       console.log("Create Policy Response:", text);
 
-      // check chaincode error
       if (!response.ok || text.includes("Error endorsing txn") || text.toLowerCase().includes("error")) {
         alert("Chaincode Error:\n" + text);
         return;
       }
-
       alert("Policy created successfully!\n" + text);
-
       if (onPolicyCreated) onPolicyCreated();
 
       // reset
@@ -328,211 +254,192 @@ function CreatePolicy({ onPolicyCreated }) {
   };
 
   return (
-    <div style={containerStyle}>
-      <h2 style={{ color: "#93c5fd", marginBottom: "10px" }}>Create New Policy</h2>
-      <form onSubmit={handleSubmit} style={{ display: "grid", gap: "10px" }}>
-        {/* Policy ID */}
-        <div style={fieldStyle}>
-          <label>Policy ID:</label>
+    <div style={styles.crudWrapper}>
+      <h2 style={styles.sectionTitle}>Create New Policy</h2>
+      <form onSubmit={handleSubmit} style={styles.formGrid}>
+        {/** Field: Policy ID */}
+        <div style={styles.formGroup}>
+          <label style={styles.label}>Policy ID:</label>
           <input
             type="text"
             name="policyID"
             value={form.policyID}
             onChange={handleChange}
-            placeholder="Enter a unique policy ID"
+            placeholder="unique policy ID"
+            style={styles.input}
           />
         </div>
 
-        {/* Farmer ID */}
-        <div style={fieldStyle}>
-          <label>Farmer ID:</label>
+        {/** Field: Farmer ID */}
+        <div style={styles.formGroup}>
+          <label style={styles.label}>Farmer ID:</label>
           <input
             type="text"
             name="farmerID"
             value={form.farmerID}
             onChange={handleChange}
             placeholder="farmer123"
+            style={styles.input}
           />
         </div>
 
-        {/* Farmer Name */}
-        <div style={fieldStyle}>
-          <label>Farmer Name:</label>
+        {/** Field: Farmer Name */}
+        <div style={styles.formGroup}>
+          <label style={styles.label}>Farmer Name:</label>
           <input
             type="text"
             name="farmerName"
             value={form.farmerName}
             onChange={handleChange}
             placeholder="Alice"
+            style={styles.input}
           />
         </div>
 
-        {/* Plan Name */}
-        <div style={fieldStyle}>
-          <label>Plan Name:</label>
+        {/** Field: Plan Name */}
+        <div style={styles.formGroup}>
+          <label style={styles.label}>Plan Name:</label>
           <input
             type="text"
             name="planName"
             value={form.planName}
             onChange={handleChange}
             placeholder="Basic Plan"
+            style={styles.input}
           />
         </div>
 
-        {/* Condition */}
-        <div style={fieldStyle}>
-          <label>Condition:</label>
+        {/** Field: Condition */}
+        <div style={styles.formGroup}>
+          <label style={styles.label}>Condition:</label>
           <input
             type="text"
             name="condition"
             value={form.condition}
             onChange={handleChange}
-            placeholder="drought/insects/flood"
+            placeholder="drought, insects, flood..."
+            style={styles.input}
           />
         </div>
 
-        {/* Coverage Amount (number) */}
-        <div style={fieldStyle}>
-          <label>Coverage Amount:</label>
+        {/** Field: Coverage */}
+        <div style={styles.formGroup}>
+          <label style={styles.label}>Coverage Amount:</label>
           <input
-            type="number" // ensures numeric input
+            type="number"
             name="coverageAmount"
             value={form.coverageAmount}
             onChange={handleChange}
             placeholder="10000"
+            style={styles.input}
           />
         </div>
 
-        {/* Payout Amount (number) */}
-        <div style={fieldStyle}>
-          <label>Payout Amount:</label>
+        {/** Field: Payout */}
+        <div style={styles.formGroup}>
+          <label style={styles.label}>Payout Amount:</label>
           <input
             type="number"
             name="payoutAmount"
             value={form.payoutAmount}
             onChange={handleChange}
             placeholder="5000"
+            style={styles.input}
           />
         </div>
 
-        {/* Premium Amount (number) */}
-        <div style={fieldStyle}>
-          <label>Premium Amount:</label>
+        {/** Field: Premium */}
+        <div style={styles.formGroup}>
+          <label style={styles.label}>Premium Amount:</label>
           <input
             type="number"
             name="premiumAmount"
             value={form.premiumAmount}
             onChange={handleChange}
             placeholder="200"
+            style={styles.input}
           />
         </div>
 
-        {/* Status (Dropdown) */}
-        <div style={fieldStyle}>
-          <label>Status:</label>
-          <select name="status" value={form.status} onChange={handleChange}>
+        {/** Field: Status */}
+        <div style={styles.formGroup}>
+          <label style={styles.label}>Status:</label>
+          <select
+            name="status"
+            value={form.status}
+            onChange={handleChange}
+            style={styles.input}
+          >
             <option value="active">active</option>
             <option value="expired">expired</option>
             <option value="claimed">claimed</option>
           </select>
         </div>
 
-        <button type="submit" style={buttonStyle}>
-          Create Policy
+        <button type="submit" style={styles.primaryButton}>
+          Create
         </button>
       </form>
     </div>
   );
 }
 
-/* Example minimal styling: */
-
-const containerStyle = {
-  backgroundColor: "#444",
-  padding: "20px",
-  borderRadius: "8px",
-  maxWidth: "600px",
-};
-
-const fieldStyle = {
-  display: "flex",
-  flexDirection: "column",
-};
-
-
-/* ---------------------------------------
-   3) UPDATE COMPONENT
---------------------------------------- */
+/* ----------------------------------------------------
+   UPDATE
+---------------------------------------------------- */
 function UpdatePolicy({ onPolicyUpdated }) {
   const [policyID, setPolicyID] = useState("");
   const [newStatus, setNewStatus] = useState("");
 
-  // PUT request to update existing policy
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
-      // We'll call the /invoke?function=UpdateInsurancePolicy
       const response = await fetch(
         `http://localhost:3000/invoke?channelid=mychannel&chaincodeid=basic&function=UpdateInsurancePolicy`,
         {
           method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            // chaincode expects an array of arguments
-            args: [policyID, newStatus],
-          }),
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ args: [policyID, newStatus] }),
         }
       );
-
-      if (!response.ok) {
-        throw new Error("Failed to update policy.");
-      }
+      if (!response.ok) throw new Error("Failed to update policy.");
       const text = await response.text();
       console.log("Policy Updated:", text);
-
-      alert(`Policy "${policyID}" Updated to status: ${newStatus}`);
-      onPolicyUpdated(); // refresh policies
+      alert(`Policy "${policyID}" Updated to: ${newStatus}`);
+      onPolicyUpdated();
       setPolicyID("");
       setNewStatus("");
     } catch (error) {
       console.error("Error updating policy:", error);
-      alert("Error updating policy. Check console.");
+      alert("Error updating policy.");
     }
   };
 
   return (
-    <div
-      style={{
-        backgroundColor: "#444",
-        padding: "20px",
-        borderRadius: "8px",
-        maxWidth: "600px",
-      }}
-    >
-      <h2 style={{ color: "#93c5fd", marginBottom: "10px" }}>Update Policy Status</h2>
-      <form onSubmit={handleSubmit} style={{ display: "grid", gap: "10px" }}>
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          <label>Policy ID:</label>
+    <div style={styles.crudWrapper}>
+      <h2 style={styles.sectionTitle}>Update Policy Status</h2>
+      <form onSubmit={handleSubmit} style={styles.formGrid}>
+        <div style={styles.formGroup}>
+          <label style={styles.label}>Policy ID:</label>
           <input
             type="text"
             value={policyID}
             onChange={(e) => setPolicyID(e.target.value)}
-            style={inputStyle}
+            style={styles.input}
+            placeholder="Policy ID"
           />
         </div>
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          <label>New Status:</label>
+        <div style={styles.formGroup}>
+          <label style={styles.label}>New Status:</label>
           <input
             type="text"
             value={newStatus}
             onChange={(e) => setNewStatus(e.target.value)}
-            style={inputStyle}
+            style={styles.input}
+            placeholder="active, expired, claimed..."
           />
         </div>
-        <button type="submit" style={buttonStyle}>
+        <button type="submit" style={styles.primaryButton}>
           Update
         </button>
       </form>
@@ -540,123 +447,233 @@ function UpdatePolicy({ onPolicyUpdated }) {
   );
 }
 
-/* ---------------------------------------
-   4) DELETE COMPONENT
---------------------------------------- */
+/* ----------------------------------------------------
+   DELETE
+---------------------------------------------------- */
 function DeletePolicy({ onPolicyDeleted }) {
   const [policyID, setPolicyID] = useState("");
 
   const handleDelete = async () => {
     if (!policyID.trim()) {
-      alert("Please enter a policy ID.");
+      alert("Enter a policy ID first.");
       return;
     }
-
     try {
-      // The key is to put &args=<policyID> in the URL
       const url = `http://localhost:3000/invoke?channelid=mychannel&chaincodeid=basic&function=DeleteInsurancePolicy&args=${policyID}`;
-      const response = await fetch(url, {
-        method: "DELETE",
-      });
-
+      const response = await fetch(url, { method: "DELETE" });
       const text = await response.text();
       console.log("Delete Response:", text);
-
-      // Check for chaincode error in the response text
       if (!response.ok || text.includes("Error endorsing txn") || text.toLowerCase().includes("error")) {
         alert("Chaincode Error:\n" + text);
         return;
       }
-
       alert(`Policy "${policyID}" Deleted Successfully!\n${text}`);
-
-      // Optionally refresh the list in the parent
-      if (onPolicyDeleted) {
-        onPolicyDeleted();
-      }
-
-      // Clear the input
+      if (onPolicyDeleted) onPolicyDeleted();
       setPolicyID("");
     } catch (error) {
       console.error("Error deleting policy:", error);
-      alert("Error deleting policy. Check console logs.");
+      alert("Error deleting policy.");
     }
   };
 
   return (
-    <div style={deleteStyle}>
-      <h2 style={{ color: "#93c5fd", marginBottom: "10px" }}>Delete Policy</h2>
-      <div style={{ marginBottom: "10px" }}>
-        <label style={{ display: "block", marginBottom: "4px" }}>Policy ID:</label>
+    <div style={styles.crudWrapper}>
+      <h2 style={styles.sectionTitle}>Delete Policy</h2>
+      <div style={styles.formGroup}>
+        <label style={styles.label}>Policy ID:</label>
         <input
           type="text"
           value={policyID}
           onChange={(e) => setPolicyID(e.target.value)}
-          style={{
-            padding: "8px",
-            borderRadius: "4px",
-            border: "1px solid #ccc",
-            marginBottom: "4px",
-            width: "200px",
-          }}
+          placeholder="Policy ID"
+          style={styles.input}
         />
       </div>
-      <button
-        onClick={handleDelete}
-        style={{
-          padding: "10px 20px",
-          borderRadius: "5px",
-          backgroundColor: "#dc2626", // red
-          color: "white",
-          border: "none",
-          cursor: "pointer",
-        }}
-      >
-        Delete Policy
+      <button onClick={handleDelete} style={{ ...styles.primaryButton, backgroundColor: "#e74c3c" }}>
+        Delete
       </button>
     </div>
   );
 }
 
-const deleteStyle = {
-  backgroundColor: "#444",
-  padding: "20px",
-  borderRadius: "8px",
-  maxWidth: "400px",
+/* ----------------------------------------------------
+   STYLES (Pastel + Responsive)
+---------------------------------------------------- */
+const styles = {
+  pageWrapper: {
+    fontFamily: '"Segoe UI", Roboto, sans-serif',
+    backgroundColor: "#f8f9fa",
+    minHeight: "100vh",
+    display: "flex",
+    flexDirection: "column",
+  },
+  header: {
+    backgroundColor: "#D7BCE8",
+    padding: "1.5rem",
+    textAlign: "center",
+  },
+  title: {
+    margin: 0,
+    fontSize: "2rem",
+    color: "#3b1456",
+  },
+  subtitle: {
+    marginTop: "0.5rem",
+    color: "#5e366a",
+    fontWeight: "400",
+  },
+  subtitle1: {
+    marginTop: "0.2rem",
+    color: "#5e366a",
+    fontWeight: "300",
+  },
+  navBar: {
+    display: "flex",
+    justifyContent: "center",
+    flexWrap: "wrap",
+    gap: "0.5rem",
+    backgroundColor: "#e9d6f2",
+    padding: "0.75rem",
+  },
+  navButton: {
+    cursor: "pointer",
+    border: "none",
+    borderRadius: "4px",
+    padding: "0.5rem 1rem",
+    color: "#fff",
+    fontWeight: "500",
+    minWidth: "80px",
+  },
+  container: {
+    maxWidth: "1200px",
+    width: "100%",
+    margin: "1rem auto",
+    padding: "1rem",
+  },
+  sectionTitle: {
+    fontSize: "1.5rem",
+    marginBottom: "1rem",
+    color: "#3b1456",
+    textAlign: "center",
+  },
+  noData: {
+    textAlign: "center",
+    fontStyle: "italic",
+    marginTop: "2rem",
+  },
+  responsiveTableWrapper: {
+    width: "100%",
+    overflowX: "auto",
+    boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
+    borderRadius: "6px",
+    backgroundColor: "#fff",
+  },
+  table: {
+    width: "100%",
+    borderCollapse: "collapse",
+    minWidth: "600px",
+  },
+  tableHeadRow: {
+    backgroundColor: "#ccc",
+  },
+  th: {
+    padding: "12px",
+    textAlign: "left",
+    backgroundColor: "#e5e5e5",
+    borderBottom: "2px solid #ddd",
+  },
+  td: {
+    padding: "12px",
+    borderBottom: "1px solid #ddd",
+  },
+  /* CRUD forms */
+  crudWrapper: {
+    backgroundColor: "#fff",
+    padding: "1rem",
+    borderRadius: "8px",
+    boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
+  },
+  formGrid: {
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr",
+    gap: "1rem",
+  },
+  formGroup: {
+    display: "flex",
+    flexDirection: "column",
+  },
+  label: {
+    marginBottom: "0.25rem",
+    fontWeight: "500",
+    color: "#2d2d2d",
+  },
+  input: {
+    padding: "0.5rem",
+    borderRadius: "4px",
+    border: "1px solid #ccc",
+  },
+  primaryButton: {
+    gridColumn: "span 2",
+    padding: "0.75rem 1.5rem",
+    backgroundColor: "#8e44ad",
+    color: "#fff",
+    border: "none",
+    borderRadius: "4px",
+    cursor: "pointer",
+    fontWeight: "500",
+    justifySelf: "center",
+  },
+  /* Analytics */
+  analyticsWrapper: {
+    backgroundColor: "#fff",
+    padding: "1rem",
+    borderRadius: "8px",
+    boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
+  },
+  analyticsCards: {
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "1rem",
+    justifyContent: "center",
+  },
+  analyticsCard: {
+    backgroundColor: "#fefefe",
+    border: "1px solid #ddd",
+    borderRadius: "6px",
+    padding: "1rem",
+    minWidth: "200px",
+    flex: "1 1 200px",
+  },
+  cardHeading: {
+    marginTop: 0,
+    marginBottom: "0.5rem",
+    fontSize: "1.1rem",
+    color: "#3b1456",
+  },
+  cardLine: {
+    margin: "0.25rem 0",
+    color: "#444",
+  },
+  note: {
+    marginTop: "1rem",
+    color: "#666",
+    fontSize: "0.95rem",
+    lineHeight: "1.4",
+  },
+
+  /* Media queries for better responsiveness */
+  // We'll define a small min-width approach
+  // with JS inline usage
+  "@media (maxWidth: 600px)": {
+    formGrid: {
+      gridTemplateColumns: "1fr !important",
+    },
+    container: {
+      padding: "0.5rem",
+    },
+    navBar: {
+      flexDirection: "column",
+    },
+  },
 };
 
-
-
-
-/* ---------------------------------------
-   STYLES
---------------------------------------- */
-
-const thStyle = {
-  padding: "8px",
-  borderBottom: "1px solid #777",
-  textAlign: "left",
-};
-
-const tdStyle = {
-  padding: "8px",
-  borderBottom: "1px solid #777",
-};
-
-const inputStyle = {
-  padding: "8px",
-  borderRadius: "4px",
-  border: "1px solid #ccc",
-  marginBottom: "4px",
-};
-
-const buttonStyle = {
-  padding: "10px 20px",
-  borderRadius: "5px",
-  backgroundColor: "#2563eb",
-  color: "white",
-  border: "none",
-  cursor: "pointer",
-};
-
-export default App;

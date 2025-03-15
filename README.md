@@ -103,23 +103,35 @@ This is a **React** front-end for managing **microinsurance policies** on a **Hy
 ## 6. Folder Structure
 
 A typical layout could look like:
-
 ```
 my-react-app/
 ├── public/
 │   └── index.html
 ├── src/
 │   ├── components/
-│   │   ├── CreatePolicy.js
-│   │   ├── ReadPolicies.js
-│   │   ├── UpdatePolicy.js
-│   │   ├── DeletePolicy.js
-│   │   └── ...
-│   ├── App.js
-│   ├── App.css
-│   └── index.js
+│   │   ├── App/
+│   │   │   ├── index.js
+│   │   │   ├── index.test.js
+│   │   ├── Dashboard/
+│   │   │   ├── Dashboard.js
+│   │   │   ├── Analytics.js
+│   │   ├── Login/
+│   │   │   ├── index.js
+│   │   │   ├── Login.css
+│   │   ├── Policies/
+│   │   │   ├── CreatePolicy.js
+│   │   │   ├── ReadPolicies.js
+│   │   │   ├── UpdatePolicy.js
+│   │   │   ├── DeletePolicy.js
+│   │   │   ├── Analytics.js
+│   ├── theme,css
+│   │   
+│   ├── index.css
+│   ├── index.js
+│   ├── setupTests.js
 ├── package.json
-└── README.md
+├── README.md
+└── .gitignore
 ```
 
 ---

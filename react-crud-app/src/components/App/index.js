@@ -1,27 +1,3 @@
-// import React, { useState, useEffect } from 'react';
-
-// import Login from '../Login';
-// import Dashboard from '../Dashboard';
-
-// const App = () => {
-//   const [isAuthenticated, setIsAuthenticated] = useState(null);
-
-//   useEffect(() => {
-//     setIsAuthenticated(JSON.parse(localStorage.getItem('is_authenticated')));
-//   }, []);
-
-//   return (
-//     <>
-//       {isAuthenticated ? (
-//         <Dashboard setIsAuthenticated={setIsAuthenticated} />
-//       ) : (
-//         <Login setIsAuthenticated={setIsAuthenticated} />
-//       )}
-//     </>
-//   );
-// };
-
-// export default App;
 
 import React, { useState, useEffect } from "react";
 import Login from "../Login";
@@ -48,32 +24,3 @@ export default function App() {
     </div>
   );
 }
-
-
-// function App() {
-//   const [isAuthenticated, setIsAuthenticated] = useState(
-//     () => localStorage.getItem("is_authenticated") === "true"
-//   );
-
-//   useEffect(() => {
-//     console.log("Auth Status:", isAuthenticated);
-//   }, [isAuthenticated]);
-
-//   // Logout function to remove authentication
-//   const handleLogout = () => {
-//     localStorage.removeItem("is_authenticated"); // Remove from storage
-//     setIsAuthenticated(false); // Update state
-//   };
-
-//   return (
-//     <div>
-//       {isAuthenticated ? (
-//         <Dashboard handleLogout={handleLogout} />
-//         // <Dashboard setIsAuthenticated={setIsAuthenticated} />
-//       ) : (
-//         <Login setIsAuthenticated={setIsAuthenticated} />
-//       )}
-//     </div>
-//   );
-// }
-

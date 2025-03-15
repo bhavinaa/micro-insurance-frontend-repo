@@ -1,0 +1,244 @@
+/* theme.css */
+
+/* pageWrapper */
+.pageWrapper {
+    font-family: "Segoe UI", Roboto, sans-serif;
+    background-color: #f8f9fa;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* to center the header's logout button */
+  }
+  
+  /* header */
+  .header {
+    background-color: #d7bce8;
+    padding: 1.5rem;
+    text-align: center;
+    width: 100%;
+    position: relative;
+  }
+  
+  /* title, subtitle, etc. */
+  .title {
+    margin: 0;
+    font-size: 2rem;
+    color: #3b1456;
+  }
+  
+  .subtitle {
+    margin-top: 0.5rem;
+    color: #5e366a;
+    font-weight: 400;
+  }
+  
+  .subtitle1 {
+    margin-top: 0.2rem;
+    color: #5e366a;
+    font-weight: 300;
+  }
+  
+  /* logoutButton */
+  .logoutButton {
+    position: absolute;
+    top: 1.2rem;
+    right: 2rem;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    background-color: #e74c3c;
+    color: #fff;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+  
+  /* navBar */
+  .navBar {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    background-color: #e9d6f2;
+    padding: 0.75rem;
+    width: 100%;
+  }
+  
+  /* navButton */
+  .navButton {
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+    padding: 0.5rem 1rem;
+    color: #fff;
+    font-weight: 500;
+    min-width: 80px;
+  }
+  
+  /* container */
+  .container {
+    max-width: 1200px;
+    width: 100%;
+    margin: 1rem auto;
+    padding: 1rem;
+  }
+  
+  /* sectionTitle */
+  .sectionTitle {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: #3b1456;
+    text-align: center;
+  }
+  
+  /* noData */
+  .noData {
+    text-align: center;
+    font-style: italic;
+    margin-top: 2rem;
+  }
+  
+  /* responsiveTableWrapper */
+  .responsiveTableWrapper {
+    width: 100%;
+    overflow-x: auto;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
+    background-color: #fff;
+  }
+  
+  /* table, tableHeadRow, th, td */
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 600px;
+  }
+  
+  .tableHeadRow {
+    background-color: #ccc;
+  }
+  
+  .th {
+    padding: 12px;
+    text-align: left;
+    background-color: #e5e5e5;
+    border-bottom: 2px solid #ddd;
+  }
+  
+  .td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  /* CRUD forms: crudWrapper, formGrid, formGroup, label, input, primaryButton */
+  .crudWrapper {
+    background-color: #fff;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .formGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  
+  .formGroup {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .label {
+    margin-bottom: 0.25rem;
+    font-weight: 500;
+    color: #2d2d2d;
+  }
+  
+  .input {
+    padding: 0.5rem;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+  }
+  
+  .primaryButton {
+    grid-column: span 2;
+    padding: 0.75rem 1.5rem;
+    background-color: #8e44ad;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    justify-self: center;
+  }
+  
+  /* analyticsWrapper, analyticsCards, analyticsCard, cardHeading, cardLine, note */
+  .analyticsWrapper {
+    background-color: #fff;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .analyticsCards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+  }
+  
+  .analyticsCard {
+    background-color: #fefefe;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 1rem;
+    min-width: 200px;
+    flex: 1 1 200px;
+  }
+  
+  .cardHeading {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+    color: #3b1456;
+  }
+  
+  .cardLine {
+    margin: 0.25rem 0;
+    color: #444;
+  }
+  
+  .note {
+    margin-top: 1rem;
+    color: #666;
+    font-size: 0.95rem;
+    line-height: 1.4;
+  }
+  
+  /* loginContainer, loginForm */
+  .loginContainer {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-top: 3rem;
+  }
+  
+  .loginForm {
+    display: grid;
+    gap: 1rem;
+  }
+  
+  /* Media queries for better responsiveness */
+  @media (max-width: 600px) {
+    .formGrid {
+      grid-template-columns: 1fr !important;
+    }
+    .container {
+      padding: 0.5rem;
+    }
+    .navBar {
+      flex-direction: column;
+    }
+  }
+  

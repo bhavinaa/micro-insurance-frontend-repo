@@ -20,7 +20,8 @@
 ![Create Policy](https://github.com/user-attachments/assets/f2db8d1a-ae5e-4701-9b91-8a4b767260fe)  
 
 ### **2️⃣ Read Policies**  
-![Read Policies](https://github.com/user-attachments/assets/e072234e-94c0-4661-b6a7-9d8675c2ac62)  
+![image](https://github.com/user-attachments/assets/f85c5719-84df-4928-9813-c729099e1232)
+ 
 
 ### **3️⃣ Update Policies**  
 ![Update Policies](https://github.com/user-attachments/assets/7d9c6278-29bd-4141-92a5-1384deabee55)  
@@ -52,4 +53,14 @@
 ---
 
 📌 *This document provides a structured overview of the application's current state, known issues, and potential improvements.*  
+
+
+## Technical Debt
+- cors is harcoded 
+- authentication is hardcoded (no validation)
+- the business logic is not fully correct, you should not be asking some of the inputs from the user. You need to generate it yourself
+- the method of parameter passing is not secure
+-  Lack of API Abstraction
+-  Hardcoded Backend Endpoints
+-  Error Handling is Basic
 
